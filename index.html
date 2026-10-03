@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mennatullah Abdelfattah — The Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ============ TOKENS ============ */
+:root{
+  --ink:#12151C; --panel:#1A2029; --panel-2:#212836; --panel-line:#2C3444;
+  --wood:#BE8752; --wood-dark:#8B5D34;
+  --glow:#6FE7C0; --glow-dim:rgba(111,231,192,.14);
+  --amber:#F4B740; --coral:#E8734A;
+  --paper:#F6F1E4; --paper-2:#EFE7D3; --paper-line:#DCD1B4;
+  --ink-text:#ECE7DA; --ink-text-dim:#9099A8;
+  --paper-text:#2B2620; --paper-text-dim:#655C4C;
+  --radius-s:6px; --radius-m:14px; --maxw:1180px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
+body{ margin:0; background:var(--ink); color:var(--ink-text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+body.lock-scroll{ overflow:hidden; }
+h1,h2,h3,.display{ font-family:'Fraunces',serif; font-weight:600; letter-spacing:-0.01em; margin:0; }
+a{ color:inherit; }
+button{ font-family:inherit; }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 32px; }
+@media (max-width:640px){ .wrap{ padding:0 20px; } }
+.mono{ font-family:'JetBrains Mono',monospace; }
+.hand{ font-family:'Caveat',cursive; }
+::selection{ background:var(--glow); color:var(--ink); }
+:focus-visible{ outline:2px solid var(--glow); outline-offset:3px; border-radius:3px; }
+
+/* ============ NAV ============ */
+#nav{ position:fixed; top:0; left:0; right:0; z-index:60; display:flex; align-items:center; justify-content:space-between; padding:18px 32px; background:rgba(18,21,28,.72); backdrop-filter:blur(10px); border-bottom:1px solid rgba(255,255,255,.06); }
+#nav .brand{ font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; color:var(--ink-text); text-decoration:none; }
+#nav .brand span{ color:var(--glow); }
+#nav ul{ list-style:none; display:flex; gap:28px; margin:0; padding:0; align-items:center; }
+#nav a.navlink{ text-decoration:none; color:var(--ink-text-dim); font-size:.92rem; transition:color .2s ease; }
+#nav a.navlink:hover{ color:var(--ink-text); }
+#nav-toggle{ display:none; background:none; border:1px solid var(--panel-line); color:var(--ink-text); border-radius:8px; padding:8px 10px; cursor:pointer; }
+@media (max-width:780px){
+  #nav ul{ position:fixed; top:60px; right:0; left:0; flex-direction:column; align-items:flex-start; background:var(--panel); padding:18px 32px; gap:16px; border-bottom:1px solid var(--panel-line); transform:translateY(-130%); transition:transform .3s ease; }
+  #nav ul.open{ transform:translateY(0); }
+  #nav-toggle{ display:block; }
+}
+
+/* ============ HERO ============ */
+#hero{ min-height:100vh; display:flex; align-items:center; position:relative; padding:120px 0 80px;
+  background: radial-gradient(ellipse 900px 600px at 82% 18%, rgba(111,231,192,.08), transparent 60%), radial-gradient(ellipse 700px 500px at 10% 90%, rgba(190,135,82,.10), transparent 60%), var(--ink); }
+.hero-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:center; width:100%; }
+@media (max-width:900px){ .hero-grid{ grid-template-columns:1fr; gap:40px; } }
+.bubble{ display:inline-block; background:var(--panel); border:1px solid var(--panel-line); padding:14px 20px; border-radius:16px 16px 16px 4px; font-family:'JetBrains Mono',monospace; font-size:.86rem; color:var(--glow); margin-bottom:28px; position:relative; min-height:1.4em; }
+.caret{ display:inline-block; width:7px; height:1em; background:var(--glow); vertical-align:text-bottom; margin-left:2px; animation:blink 1s steps(1) infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+.hero-name{ font-size:clamp(2.4rem, 6vw, 4.4rem); line-height:1.02; color:var(--ink-text); }
+.hero-name em{ font-style:italic; color:var(--glow); font-weight:500; }
+.hero-role{ margin-top:18px; font-size:clamp(1rem,2vw,1.2rem); color:var(--ink-text-dim); max-width:46ch; line-height:1.55; }
+.hero-loc{ margin-top:22px; display:flex; gap:10px; align-items:center; font-family:'JetBrains Mono',monospace; font-size:.82rem; color:var(--ink-text-dim); }
+.hero-loc .pulse{ width:7px; height:7px; border-radius:50%; background:var(--glow); box-shadow:0 0 0 0 var(--glow-dim); animation:pulse 2s infinite; }
+@keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(111,231,192,.5);} 70%{ box-shadow:0 0 0 8px rgba(111,231,192,0);} 100%{ box-shadow:0 0 0 0 rgba(111,231,192,0);} }
+.hero-ctas{ margin-top:34px; display:flex; gap:14px; flex-wrap:wrap; }
+.btn{ display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:999px; font-size:.92rem; font-weight:600; text-decoration:none; border:1px solid transparent; cursor:pointer; transition:transform .18s ease, background .2s ease, border-color .2s ease; }
+.btn:hover{ transform:translateY(-2px); }
+.btn-primary{ background:var(--glow); color:#0B1A15; }
+.btn-primary:hover{ background:#84EDCB; }
+.btn-ghost{ background:transparent; border-color:var(--panel-line); color:var(--ink-text); }
+.btn-ghost:hover{ border-color:var(--glow); }
+.polaroid{ background:#fff; padding:14px 14px 46px; border-radius:4px; box-shadow:0 22px 50px rgba(0,0,0,.45), 0 4px 14px rgba(0,0,0,.3); transform:rotate(3.5deg); max-width:320px; margin:0 auto; position:relative; }
+.polaroid img{ width:100%; display:block; border-radius:2px; }
+.polaroid .cap{ position:absolute; bottom:12px; left:16px; right:16px; font-family:'Caveat',cursive; font-size:1.3rem; color:#2B2620; }
+.tape{ position:absolute; width:70px; height:26px; background:rgba(244,183,64,.55); top:-12px; left:50%; transform:translateX(-50%) rotate(-3deg); box-shadow:0 2px 6px rgba(0,0,0,.2); }
+.scrollcue{ position:absolute; bottom:34px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; color:var(--ink-text-dim); font-family:'JetBrains Mono',monospace; font-size:.76rem; text-decoration:none; }
+.scrollcue .dot-track{ width:1px; height:34px; background:var(--panel-line); position:relative; overflow:hidden; }
+.scrollcue .dot-track::after{ content:''; position:absolute; left:-1px; top:-10px; width:3px; height:10px; background:var(--glow); animation:drip 1.8s ease-in-out infinite; }
+@keyframes drip{ 0%{ top:-10px;} 100%{ top:34px;} }
+@media (prefers-reduced-motion:reduce){ .scrollcue .dot-track::after{ animation:none; top:10px;} .pulse{animation:none;} }
+
+/* ============ SECTION HEADERS ============ */
+.section{ padding:120px 0; position:relative; }
+.section-tag{ font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--glow); margin-bottom:10px; }
+.section-title{ font-size:clamp(1.9rem,4vw,2.7rem); color:var(--ink-text); max-width:20ch; }
+.section-sub{ margin-top:14px; color:var(--ink-text-dim); font-size:1.02rem; max-width:56ch; line-height:1.6; }
+.section-head{ margin-bottom:56px; }
+
+/* ============ WORKSPACE / DESK ============ */
+#lab{ background:var(--ink); }
+.desk-scene{ margin-top:60px; position:relative; border-radius:22px; background:linear-gradient(180deg, #171C26 0%, #171C26 62%, var(--wood-dark) 62%, var(--wood) 100%); padding:52px 40px 0; overflow:hidden; border:1px solid var(--panel-line); }
+.desk-scene::before{ content:''; position:absolute; inset:0 0 auto 0; height:62%; background:radial-gradient(ellipse 500px 260px at 50% 100%, rgba(111,231,192,.10), transparent 70%); pointer-events:none; }
+.monitor{ max-width:760px; margin:0 auto; position:relative; z-index:2; }
+.monitor-body{ background:#0D1016; border:1px solid #2A3140; border-radius:16px 16px 6px 6px; padding:14px 14px 20px; box-shadow:0 30px 60px rgba(0,0,0,.55); }
+.screen{ background:#0A0E14; border-radius:8px; overflow:hidden; min-height:340px; border:1px solid #1E2530; opacity:0; transform:scale(.97); transition:opacity .7s ease, transform .7s ease; }
+.desk-scene.lit .screen{ opacity:1; transform:scale(1); }
+.screen-topbar{ display:flex; align-items:center; gap:8px; padding:10px 14px; background:#10141C; border-bottom:1px solid #1E2530; }
+.screen-topbar .dot{ width:9px; height:9px; border-radius:50%; }
+.dot.red{ background:#E8734A; } .dot.amber{ background:#F4B740; } .dot.green{ background:#6FE7C0; }
+.screen-title{ margin-left:8px; font-family:'JetBrains Mono',monospace; font-size:.74rem; color:#6B7688; }
+.folder-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; padding:22px; }
+@media (max-width:520px){ .folder-grid{ grid-template-columns:repeat(2,1fr);} }
+.folder-btn{ background:none; border:1px solid transparent; border-radius:10px; cursor:pointer; padding:14px 8px; display:flex; flex-direction:column; align-items:center; gap:10px; color:var(--ink-text); transition:background .2s ease, transform .2s ease, border-color .2s ease; }
+.folder-btn:hover{ background:rgba(255,255,255,.04); border-color:var(--panel-line); transform:translateY(-3px); }
+.folder-icon{ width:46px; height:34px; border-radius:3px 7px 7px 7px; position:relative; }
+.folder-icon::before{ content:''; position:absolute; top:-7px; left:0; width:22px; height:8px; border-radius:5px 5px 0 0; background:inherit; }
+.folder-label{ font-size:.8rem; font-weight:600; text-align:center; line-height:1.25; }
+.folder-sub{ font-family:'JetBrains Mono',monospace; font-size:.66rem; color:var(--ink-text-dim); text-align:center; }
+.monitor-stand{ width:16px; height:34px; background:#22293A; margin:0 auto; }
+.monitor-base{ width:150px; height:10px; background:#1B2130; margin:0 auto; border-radius:6px; }
+.desk-surface{ position:relative; z-index:2; max-width:820px; margin:34px auto 0; display:flex; align-items:flex-end; justify-content:center; gap:26px; padding-bottom:26px; }
+.desk-item{ display:flex; flex-direction:column; align-items:center; gap:6px; font-size:1.6rem; opacity:.92; }
+.keyb{ width:160px; height:44px; background:#2A2118; border-radius:6px; box-shadow:0 6px 14px rgba(0,0,0,.3); background-image:linear-gradient(#3A2E20 1px, transparent 1px), linear-gradient(90deg,#3A2E20 1px, transparent 1px); background-size:16px 12px; border:1px solid #4A3A28; }
+.mouse-shape{ width:22px; height:34px; background:#2A2118; border-radius:10px 10px 14px 14px; border:1px solid #4A3A28; }
+.sticky{ font-family:'Caveat',cursive; font-size:1.05rem; line-height:1.15; color:#2B2620; width:88px; padding:10px; text-align:center; transform:rotate(-4deg); box-shadow:0 8px 16px rgba(0,0,0,.25); }
+.sticky.amber{ background:var(--amber); }
+.sticky.coral{ background:var(--coral); color:#fff; transform:rotate(3deg); }
+.also-built{ margin-top:46px; display:flex; flex-wrap:wrap; gap:14px; justify-content:center; }
+.note-card{ background:var(--panel); border:1px solid var(--panel-line); border-radius:var(--radius-m); padding:16px 18px; max-width:240px; }
+.note-card h4{ font-family:'Fraunces',serif; font-size:1rem; margin:0 0 6px; color:var(--ink-text); }
+.note-card p{ font-size:.82rem; color:var(--ink-text-dim); line-height:1.5; margin:0; }
+
+/* ============ PROJECT OVERLAY ============ */
+#overlay{ position:fixed; inset:0; z-index:90; background:var(--paper); color:var(--paper-text); overflow-y:auto; opacity:0; transform:scale(.05); pointer-events:none; transition:transform .62s cubic-bezier(.16,1,.3,1), opacity .4s ease; }
+#overlay.active{ opacity:1; transform:scale(1); pointer-events:auto; }
+@media (prefers-reduced-motion:reduce){ #overlay{ transition:opacity .3s ease; transform:none !important; } }
+.ov-close{ position:fixed; top:20px; right:24px; z-index:95; background:var(--paper-text); color:var(--paper); border:none; border-radius:999px; width:42px; height:42px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(0,0,0,.2); }
+.ov-inner{ max-width:820px; margin:0 auto; padding:100px 32px 100px; }
+.ov-eyebrow{ font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--paper-text-dim); }
+.ov-title{ font-size:clamp(2rem,5vw,3.2rem); margin-top:10px; }
+.ov-tagline{ font-family:'Caveat',cursive; font-size:1.5rem; color:var(--coral); margin-top:8px; }
+.ov-meta{ display:flex; gap:28px; flex-wrap:wrap; margin-top:28px; padding-top:24px; border-top:1px solid var(--paper-line); }
+.ov-meta div{ min-width:120px; }
+.ov-meta .k{ font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--paper-text-dim); text-transform:uppercase; letter-spacing:.04em; }
+.ov-meta .v{ font-size:.92rem; font-weight:600; margin-top:4px; }
+.ov-tech{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.chip{ font-family:'JetBrains Mono',monospace; font-size:.74rem; background:var(--paper-2); border:1px solid var(--paper-line); padding:5px 10px; border-radius:999px; }
+.ov-links{ margin-top:24px; display:flex; gap:12px; flex-wrap:wrap; }
+.ov-links a, .ov-links span{ font-size:.86rem; font-weight:600; padding:10px 18px; border-radius:999px; text-decoration:none; }
+.ov-links a{ background:var(--paper-text); color:var(--paper); }
+.ov-links span{ background:transparent; border:1px dashed var(--paper-line); color:var(--paper-text-dim); font-weight:500; }
+.ov-gallery{ margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width:600px){ .ov-gallery{ grid-template-columns:1fr; } }
+.ov-gallery img{ width:100%; border-radius:10px; display:block; box-shadow:0 14px 30px rgba(0,0,0,.14); cursor:zoom-in; }
+.chapters{ margin-top:56px; display:flex; flex-direction:column; gap:38px; }
+.chapter{ padding-left:26px; border-left:2px solid var(--paper-line); position:relative; }
+.chapter::before{ content:attr(data-n); position:absolute; left:-11px; top:0; width:20px; height:20px; border-radius:50%; background:var(--paper); border:2px solid var(--coral); color:var(--coral); font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.chapter h3{ font-family:'Caveat',cursive; font-size:1.6rem; font-weight:700; color:var(--coral); margin-bottom:8px; }
+.chapter p{ font-size:.97rem; line-height:1.68; color:var(--paper-text); margin:0; max-width:64ch; }
+.lightbox{ position:fixed; inset:0; background:rgba(20,17,12,.9); z-index:99; display:none; align-items:center; justify-content:center; padding:30px; cursor:zoom-out; }
+.lightbox.open{ display:flex; }
+.lightbox img{ max-width:100%; max-height:100%; border-radius:8px; }
+
+/* ============ ACHIEVEMENTS SHELF ============ */
+#shelf-section{ background:var(--panel); border-top:1px solid var(--panel-line); border-bottom:1px solid var(--panel-line); }
+.shelf-scroll{ margin-top:50px; display:flex; gap:20px; overflow-x:auto; padding-bottom:30px; scroll-snap-type:x proximity; }
+.shelf-scroll::-webkit-scrollbar{ height:8px; }
+.shelf-scroll::-webkit-scrollbar-thumb{ background:var(--panel-line); border-radius:99px; }
+.frame{ scroll-snap-align:start; flex:0 0 260px; background:var(--panel-2); border:1px solid var(--panel-line); border-radius:var(--radius-m); padding:22px; position:relative; }
+.frame::before{ content:''; position:absolute; inset:8px; border:1px solid rgba(244,183,64,.35); border-radius:8px; pointer-events:none; }
+.frame .ic{ font-size:1.6rem; }
+.frame h4{ font-family:'Fraunces',serif; font-size:1.05rem; margin:14px 0 4px; color:var(--ink-text); }
+.frame .org{ font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--glow); margin-bottom:8px; }
+.frame p{ font-size:.83rem; color:var(--ink-text-dim); line-height:1.55; margin:0; }
+.frame .yr{ margin-top:12px; font-family:'JetBrains Mono',monospace; font-size:.68rem; color:var(--ink-text-dim); opacity:.7; }
+.shelf-bar{ height:10px; background:linear-gradient(180deg,var(--wood),var(--wood-dark)); border-radius:3px; margin-top:-10px; box-shadow:0 8px 18px rgba(0,0,0,.35); }
+
+/* ============ ABOUT ============ */
+#about .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; margin-top:50px; }
+@media (max-width:860px){ #about .about-grid{ grid-template-columns:1fr; gap:40px; } }
+.bio p{ font-size:1.05rem; line-height:1.75; color:var(--ink-text-dim); margin:0 0 18px; }
+.bio p:last-child{ margin-bottom:0; }
+.skill-group{ margin-bottom:24px; }
+.skill-group:last-child{ margin-bottom:0; }
+.skill-group h4{ font-family:'JetBrains Mono',monospace; font-size:.74rem; color:var(--glow); text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; }
+.skill-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.skill-chip{ font-size:.82rem; background:var(--panel); border:1px solid var(--panel-line); padding:6px 12px; border-radius:8px; color:var(--ink-text); }
+
+/* ============ TIMELINE ============ */
+#timeline{ background:var(--ink); }
+.tl{ margin-top:56px; position:relative; padding-left:28px; border-left:2px solid var(--panel-line); }
+.tl-item{ position:relative; padding-bottom:42px; }
+.tl-item:last-child{ padding-bottom:0; }
+.tl-item::before{ content:''; position:absolute; left:-35px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--ink); border:2px solid var(--glow); }
+.tl-date{ font-family:'JetBrains Mono',monospace; font-size:.76rem; color:var(--glow); }
+.tl-title{ font-family:'Fraunces',serif; font-size:1.2rem; margin-top:6px; color:var(--ink-text); }
+.tl-org{ font-size:.88rem; color:var(--ink-text-dim); margin-top:2px; }
+.tl-desc{ font-size:.9rem; color:var(--ink-text-dim); margin-top:10px; line-height:1.6; max-width:60ch; }
+
+/* ============ HIRE ME / FREELANCE ============ */
+#hire{ background:var(--ink); }
+.hire-grid{ margin-top:50px; display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+.hire-card{ display:flex; flex-direction:column; gap:10px; background:var(--panel); border:1px solid var(--panel-line); border-radius:var(--radius-m); padding:26px 24px; text-decoration:none; color:var(--ink-text); position:relative; transition:transform .2s ease, border-color .2s ease; }
+.hire-card::before{ content:''; position:absolute; inset:8px; border:1px solid rgba(244,183,64,.25); border-radius:8px; pointer-events:none; }
+.hire-card:hover{ transform:translateY(-4px); border-color:var(--glow); }
+.hire-platform{ font-size:.72rem; color:var(--glow); text-transform:uppercase; letter-spacing:.05em; }
+.hire-card h3{ font-size:1.3rem; }
+.hire-card p{ font-size:.88rem; color:var(--ink-text-dim); line-height:1.55; margin:0; flex:1; }
+.hire-go{ font-weight:600; font-size:.88rem; color:var(--glow); margin-top:6px; }
+.hire-cv{ margin-top:36px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; padding:22px 26px; background:var(--panel-2); border:1px dashed var(--panel-line); border-radius:var(--radius-m); }
+.hire-cv span{ flex:1; min-width:200px; color:var(--ink-text-dim); font-size:.92rem; }
+
+/* ============ CONTACT ============ */
+#contact{ background: linear-gradient(rgba(18,21,28,.94), rgba(18,21,28,.97)), repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 2px, transparent 2px 14px); border-top:1px solid var(--panel-line); }
+.contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:50px; margin-top:50px; align-items:start; }
+@media (max-width:860px){ .contact-grid{ grid-template-columns:1fr; } }
+.note-pad{ background:var(--amber); color:#2B2620; border-radius:6px; padding:30px 28px; transform:rotate(-1.2deg); box-shadow:0 24px 50px rgba(0,0,0,.35); }
+.note-pad h3{ font-family:'Caveat',cursive; font-size:1.8rem; margin-bottom:16px; }
+.note-pad label{ display:block; font-family:'JetBrains Mono',monospace; font-size:.7rem; margin:14px 0 6px; text-transform:uppercase; letter-spacing:.04em; }
+.note-pad input, .note-pad textarea{ width:100%; border:none; border-bottom:2px solid rgba(43,38,32,.35); background:transparent; padding:8px 2px; font-family:'Inter',sans-serif; font-size:.95rem; color:#2B2620; resize:vertical; }
+.note-pad input:focus, .note-pad textarea:focus{ outline:none; border-color:#2B2620; }
+.note-pad button{ margin-top:20px; background:#2B2620; color:var(--amber); border:none; padding:12px 22px; border-radius:999px; font-weight:600; cursor:pointer; font-size:.88rem; }
+.note-confirm{ margin-top:12px; font-size:.82rem; display:none; }
+.note-confirm.show{ display:block; }
+.contact-direct h3{ color:var(--ink-text); margin-bottom:18px; }
+.contact-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:4px; }
+.contact-list a{ display:flex; align-items:center; justify-content:space-between; padding:16px 4px; text-decoration:none; color:var(--ink-text); border-bottom:1px solid var(--panel-line); font-size:.98rem; transition:padding-left .2s ease, color .2s ease; }
+.contact-list a:hover{ padding-left:10px; color:var(--glow); }
+.contact-list .lbl{ font-weight:600; }
+.contact-list .val{ font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--ink-text-dim); }
+footer{ padding:36px 0; text-align:center; color:var(--ink-text-dim); font-size:.8rem; border-top:1px solid var(--panel-line); }
+footer span{ color:var(--glow); }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#hero" class="brand">Menna<span>.</span>lab</a>
+  <button id="nav-toggle" aria-label="Toggle menu">☰</button>
+  <ul id="navlist">
+    <li><a class="navlink" href="#lab">Projects</a></li>
+    <li><a class="navlink" href="#shelf-section">Achievements</a></li>
+    <li><a class="navlink" href="#about">About</a></li>
+    <li><a class="navlink" href="#timeline">Experience</a></li>
+    <li><a class="navlink" href="#hire">Hire Me</a></li>
+    <li><a class="navlink btn btn-ghost" style="padding:9px 18px;" href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="bubble" id="typedBubble"><span id="typedText"></span><span class="caret"></span></div>
+      <h1 class="hero-name">Mennatullah<br><em>Abdelfattah</em></h1>
+      <p class="hero-role">AI &amp; CS student who builds deep-learning models by day, teaches ten-year-olds to code by evening, and occasionally turns both into a cartoon video.</p>
+      <div class="hero-loc"><span class="pulse"></span> Alexandria, Egypt — currently at E-JUST</div>
+      <div class="hero-ctas">
+        <a href="#lab" class="btn btn-primary">Step into the lab</a>
+        <a href="https://drive.google.com/file/d/1WcNxBcORqGb6noR3HIQFmzISBM5PlhY6/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">📄 View CV</a>
+        <a href="#hire" class="btn btn-ghost">Hire me</a>
+        <a href="#contact" class="btn btn-ghost">Say hi</a>
+      </div>
+    </div>
+    <div>
+      <div class="polaroid">
+        <div class="tape"></div>
+        <img id="profileImg" alt="Portrait of Mennatullah Abdelfattah">
+        <div class="cap">still debugging, still smiling</div>
+      </div>
+    </div>
+  </div>
+  <a href="#lab" class="scrollcue"><span>enter the lab</span><span class="dot-track"></span></a>
+</section>
+
+<section id="lab" class="section wrap">
+  <div class="section-head">
+    <div class="section-tag">01 — the workspace</div>
+    <h2 class="section-title">This isn't a project list. It's my desk.</h2>
+    <p class="section-sub">Click a folder on the screen to open it — each one holds the story behind a real build, from the first sketch to what I'd do differently now.</p>
+  </div>
+  <div class="desk-scene" id="deskScene">
+    <div class="monitor">
+      <div class="monitor-body">
+        <div class="screen" id="screen">
+          <div class="screen-topbar">
+            <span class="dot red"></span><span class="dot amber"></span><span class="dot green"></span>
+            <span class="screen-title">menna@lab: ~/projects</span>
+          </div>
+          <div class="folder-grid" id="folderGrid"></div>
+        </div>
+      </div>
+      <div class="monitor-stand"></div>
+      <div class="monitor-base"></div>
+    </div>
+    <div class="desk-surface">
+      <div class="desk-item"><div class="sticky amber">build<br>more ML</div></div>
+      <div class="desk-item"><div class="keyb"></div></div>
+      <div class="desk-item"><div class="mouse-shape"></div></div>
+      <div class="desk-item">☕</div>
+      <div class="desk-item"><div class="sticky coral">ship it</div></div>
+    </div>
+  </div>
+  <div class="also-built" id="alsoBuilt"></div>
+</section>
+
+<section id="shelf-section" class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">02 — the shelf</div>
+      <h2 class="section-title">Framed things I'm proud of.</h2>
+      <p class="section-sub">Competitions, teams I built, and a few plaques that live on the wall above my desk.</p>
+    </div>
+    <div class="shelf-scroll" id="shelfRow"></div>
+    <div class="shelf-bar"></div>
+  </div>
+</section>
+
+<section id="about" class="section wrap">
+  <div class="section-head">
+    <div class="section-tag">03 — about</div>
+    <h2 class="section-title">Who's behind the desk</h2>
+  </div>
+  <div class="about-grid">
+    <div class="bio">
+      <p>I'm a Computer Science &amp; Information Technology student at E-JUST, majoring in Artificial Intelligence and Data Science — currently holding a 50% merit scholarship and a 3.53 CGPA. Most of what I do lives at the intersection of building and teaching: training deep learning models and wiring up embedded systems on one side, and three years of walking students through Scratch, Python, C++ and their first circuits on the other.</p>
+      <p>On the side, I freelance — polishing CVs and applications for scholarship and job seekers, transcribing audio, and lately turning programming lessons into AI-generated cartoon videos so they're easier to sit through. What I'm chasing next: more hands-on AI/ML internships and projects, on the way to building an actual career around them.</p>
+    </div>
+    <div class="skills">
+      <div class="skill-group"><h4>Languages</h4><div class="skill-chips">
+        <span class="skill-chip">Python</span><span class="skill-chip">C++</span><span class="skill-chip">JavaScript</span><span class="skill-chip">HTML/CSS</span><span class="skill-chip">SQL</span></div></div>
+      <div class="skill-group"><h4>ML / AI</h4><div class="skill-chips">
+        <span class="skill-chip">TensorFlow</span><span class="skill-chip">CNNs</span><span class="skill-chip">Deep Learning</span><span class="skill-chip">Gradio</span><span class="skill-chip">Hugging Face</span></div></div>
+      <div class="skill-group"><h4>Embedded systems</h4><div class="skill-chips">
+        <span class="skill-chip">Arduino</span><span class="skill-chip">ESP32</span><span class="skill-chip">I2C</span><span class="skill-chip">LCD/OLED</span><span class="skill-chip">IoT</span><span class="skill-chip">Motor drivers</span></div></div>
+      <div class="skill-group"><h4>Tools &amp; platforms</h4><div class="skill-chips">
+        <span class="skill-chip">MySQL</span><span class="skill-chip">Tkinter</span><span class="skill-chip">Git/GitHub</span><span class="skill-chip">Flutter</span><span class="skill-chip">Canva</span><span class="skill-chip">CapCut</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="timeline" class="section wrap">
+  <div class="section-head">
+    <div class="section-tag">04 — timeline</div>
+    <h2 class="section-title">How I got to this desk</h2>
+  </div>
+  <div class="tl" id="tlList"></div>
+</section>
+
+<section id="hire" class="section wrap">
+  <div class="section-head">
+    <div class="section-tag">05 — hire me</div>
+    <h2 class="section-title">Need a hand on a project?</h2>
+    <p class="section-sub">I take on freelance work on three platforms. Pick the one you prefer and send me a message there.</p>
+  </div>
+  <div class="hire-grid">
+    <a class="hire-card" href="https://www.upwork.com/freelancers/~01f46c2add3bded2d6?mp_source=share" target="_blank" rel="noopener noreferrer">
+      <span class="hire-platform mono">Upwork</span>
+      <h3>Upwork Profile</h3>
+      <p>International clients, transcription, CV and application writing, and programming-related work.</p>
+      <span class="hire-go">View profile ↗</span>
+    </a>
+    <a class="hire-card" href="https://khamsat.com/user/mennatullah_ess" target="_blank" rel="noopener noreferrer">
+      <span class="hire-platform mono">Khamsat · خمسات</span>
+      <h3>Khamsat Profile</h3>
+      <p>Arabic-speaking clients, with services like CV optimization, transcription and content creation.</p>
+      <span class="hire-go">View profile ↗</span>
+    </a>
+    <a class="hire-card" href="https://mostaql.com/u/MennaTullah_ess" target="_blank" rel="noopener noreferrer">
+      <span class="hire-platform mono">Mostaql · مستقل</span>
+      <h3>Mostaql Profile</h3>
+      <p>Project-based work for Arabic-speaking clients, from content and design to programming support.</p>
+      <span class="hire-go">View profile ↗</span>
+    </a>
+  </div>
+  <div class="hire-cv">
+    <span>Prefer the full picture? My CV has my education, experience and projects in one place.</span>
+    <a class="btn btn-primary" href="https://drive.google.com/file/d/1WcNxBcORqGb6noR3HIQFmzISBM5PlhY6/view?usp=sharing" target="_blank" rel="noopener noreferrer">📄 View my CV</a>
+    <a class="btn btn-ghost" href="https://drive.google.com/uc?export=download&id=1WcNxBcORqGb6noR3HIQFmzISBM5PlhY6" rel="noopener noreferrer">⬇ Download</a>
+  </div>
+</section>
+
+<section id="contact" class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">06 — say hi</div>
+      <h2 class="section-title">Leave a note on my desk</h2>
+      <p class="section-sub">Whether it's about an internship, a project, or a Scratch class question — I read everything.</p>
+    </div>
+    <div class="contact-grid">
+      <form class="note-pad" id="noteForm">
+        <h3>Pin me a note</h3>
+        <label for="nm">Your name</label>
+        <input id="nm" required>
+        <label for="em">Your email</label>
+        <input id="em" type="email" required>
+        <label for="ms">Message</label>
+        <textarea id="ms" rows="4" required></textarea>
+        <button type="submit">Pin it →</button>
+        <div class="note-confirm" id="noteConfirm">Opening your email app with this note filled in...</div>
+      </form>
+      <div class="contact-direct">
+        <h3 class="display" style="font-size:1.3rem;">Or reach me directly</h3>
+        <ul class="contact-list">
+          <li><a href="mailto:mennaessam347@gmail.com"><span class="lbl">Email</span><span class="val">mennaessam347@gmail.com</span></a></li>
+          <li><a href="tel:+201019160711"><span class="lbl">Phone</span><span class="val">+20 101 916 0711</span></a></li>
+          <li><a href="http://www.linkedin.com/in/mennatullah-abdelfattah-ab513327a" target="_blank" rel="noopener"><span class="lbl">LinkedIn</span><span class="val">/mennatullah-abdelfattah</span></a></li>
+          <li><a href="https://github.com/Mennatullah-essam" target="_blank" rel="noopener"><span class="lbl">GitHub</span><span class="val">/Mennatullah-essam</span></a></li>
+          <li><a href="https://mennatullah-essam.github.io/Mennatullah-portfolio/" target="_blank" rel="noopener"><span class="lbl">Portfolio</span><span class="val">view site ↗</span></a></li>
+          <li><a href="https://drive.google.com/file/d/1WcNxBcORqGb6noR3HIQFmzISBM5PlhY6/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span class="lbl">CV</span><span class="val">view / download ↗</span></a></li>
+          <li><a href="https://www.upwork.com/freelancers/~01f46c2add3bded2d6?mp_source=share" target="_blank" rel="noopener noreferrer"><span class="lbl">Upwork</span><span class="val">hire me ↗</span></a></li>
+          <li><a href="https://khamsat.com/user/mennatullah_ess" target="_blank" rel="noopener noreferrer"><span class="lbl">Khamsat</span><span class="val">hire me ↗</span></a></li>
+          <li><a href="https://mostaql.com/u/MennaTullah_ess" target="_blank" rel="noopener noreferrer"><span class="lbl">Mostaql</span><span class="val">hire me ↗</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Designed &amp; built as <span>The Lab</span> — Mennatullah Abdelfattah, 2026</footer>
+
+<div id="overlay"></div>
+<div class="lightbox" id="lightbox"><img id="lightboxImg" alt=""></div>
+
+<script>
+/* =====================================================================
+   IMAGES — PASTE YOUR ORIGINAL IMAGE DATA HERE (9 images total)
+   In your old file, each image looked like:  data:image/jpeg;base64,/9j/4AAQ...
+   Copy each full "data:image/jpeg;base64,..." string between the quotes below.
+   Tip: you can also use normal file paths instead, e.g. 'images/profile.jpg'
+   ===================================================================== */
+const IMG = {
+  profile : '',  // hero portrait (was inside the polaroid <img>)
+  ejust1  : '',  // EJUST HQ Hub — image 1
+  ejust2  : '',  // EJUST HQ Hub — image 2
+  elib1   : '',  // e-Library — image 1
+  elib2   : '',  // e-Library — image 2
+  watch21 : '',  // Watch21 — image 1
+  scare1  : '',  // ScareGrow — image 1
+  sign1   : '',  // ArSL Recognition — image 1
+  sign2   : ''   // ArSL Recognition — image 2
+};
+
+/* ============ DATA ============ */
+const PROJECTS = [
+  {
+    id:'ejust', accent:'#6FE7C0', label:'EJUST HQ Hub', sub:'web platform',
+    tagline:'One platform for everything happening on campus',
+    role:'Co-developer — architecture, UI/UX, frontend', duration:'Feb 2026 – Present',
+    tech:['HTML','CSS','JavaScript','SQL','PHP','React (planned)','Node.js (planned)','MongoDB (planned)'],
+    live:null, liveNote:'Live demo: still being built',
+    images:[IMG.ejust1, IMG.ejust2],
+    chapters:[
+      {t:'The challenge', p:"E-JUST's campus activities were scattered across disconnected channels — clubs, events, tournaments, room bookings, transportation, even the campus marketplace, each living in its own silo, with four very different kinds of users needing four very different views of the same system."},
+      {t:'The thinking', p:'Before writing a line of code, I mapped out the roles — Students, Club Leaders, Brand Owners, Administrators — and sketched the database structure and approval flows around them, especially for room bookings, which needed a real request-and-review pipeline rather than a simple form.'},
+      {t:'Building it', p:'The current version is built with HTML, CSS, JavaScript, SQL and PHP, with a planned migration to a React / Node.js / Express / MongoDB stack for production. Authentication is designed to integrate with the university\u2019s SIS, so access relies on real student IDs and official emails.'},
+      {t:'Where it stands', p:'Club dashboards, event registration, and admin oversight tools are working in the current build, developed under the supervision of the university administration — it\u2019s still growing before a full campus-wide launch.'},
+      {t:'What I learned', p:'Designing for four roles that all touch the same data taught me that most of the hard problems here weren\u2019t technical — they were about deciding whose view of the truth wins when two roles disagree.'}
+    ]
+  },
+  {
+    id:'elib', accent:'#5FB8D6', label:'e-Library', sub:'reading platform',
+    tagline:'A calmer way to browse digital books',
+    role:'Developer', duration:'2025', tech:['HTML','CSS','JavaScript'],
+    live:null, liveNote:'No public link yet',
+    images:[IMG.elib1, IMG.elib2],
+    chapters:[
+      {t:'The challenge', p:'Most book-browsing sites bury you in clutter before you\u2019ve found anything to read. I wanted discovery to feel closer to walking along a shelf than filling out a search form.'},
+      {t:'The thinking', p:'I planned browse and search flows organized around genre and category first, keeping the sign-up wall out of the way until someone actually wants to save or borrow something.'},
+      {t:'Building it', p:'Built as a responsive front end with a clean visual hierarchy — a clear collection browser, category filters, and a simple call-to-action for account creation.'},
+      {t:'Where it stands', p:'A working platform for browsing, searching and managing digital books through a simple, friendly interface.'},
+      {t:'What I learned', p:'Restraint is a design decision. Every panel I decided not to add made the ones that stayed more useful.'}
+    ]
+  },
+  {
+    id:'watch21', accent:'#F4B740', label:'Watch21', sub:'health-tech · Intel ISEF',
+    tagline:'A smartwatch that watches out for you',
+    role:'Hardware & software lead', duration:'Nov 2022 – Jan 2023',
+    tech:['ESP32','C++','MAX30102 sensor','Sound sensor','I2C OLED / Nokia 5110 LCD','Wi-Fi','HTML/CSS/JS'],
+    live:null, liveNote:'Prototype — not publicly deployed',
+    images:[IMG.watch21],
+    chapters:[
+      {t:'The challenge', p:'Children with Down syndrome can face health complications that are hard for parents to monitor constantly and gently, without the child needing to understand or manage the device themselves.'},
+      {t:'The thinking', p:'I chose sensors that could track heart rate, blood oxygen, and ambient noise, then planned a wireless pipeline so vitals would reach a web dashboard in real time — the child just wears the watch.'},
+      {t:'Building it', p:'Wired an ESP32 to a MAX30102 heart-rate/SpO\u2082 sensor and a sound sensor, with an onboard display for local readings and a Wi-Fi connection streaming data to a companion web view built with HTML, CSS and JavaScript.'},
+      {t:'Where it stands', p:'A working prototype that transmits real-time vitals and triggers instant alerts on abnormal readings, presented as part of an Intel ISEF-track project.'},
+      {t:'What I learned', p:'Designing for a vulnerable user meant every design choice had to earn its complexity — comfort and reliability mattered more than adding features.'}
+    ]
+  },
+  {
+    id:'scaregrow', accent:'#7EC87A', label:'ScareGrow', sub:'smart agriculture · IoT',
+    tagline:'A scarecrow that keeps an eye on your soil',
+    role:'Team lead — hardware, app, strategy', duration:'Sep 2022 – Nov 2024',
+    tech:['Arduino Mega/Nano (C++)','Soil moisture / pH / temp / nutrient sensors','Flutter','LCD','Motor driver','IoT'],
+    live:'https://mennatullah-essam.github.io/ScareGrow/',
+    images:[IMG.scare1],
+    chapters:[
+      {t:'The challenge', p:'Small farmers often can\u2019t access real-time soil data, which means fertilizer and irrigation decisions get made on guesswork instead of measurement.'},
+      {t:'The thinking', p:'Rather than a plain sensor box, we sketched a scarecrow-shaped housing — something that belongs in a field and doesn\u2019t look out of place — paired with a mobile app for recommendations a non-technical farmer could actually use.'},
+      {t:'Building it', p:'Wired a multi-sensor array (moisture, pH, temperature, humidity, nutrients, organic matter, infiltration rate) to an Arduino, and built a Flutter app that turns raw readings into soil analysis, fertilizer guidance, market prices, and a knowledge-sharing space for farmers.'},
+      {t:'Where it stands', p:'Finalist at the Egyptian Junior Researcher Competition (Nile University), and one of six national winning teams at Nation Builders, run by the US Embassy and Ministry of Youth and Sports — sponsored by Azola Egypt.'},
+      {t:'What I learned', p:'Leading a team across hardware, app development and field-testing taught me that a good IoT product is mostly a communication problem between disciplines that don\u2019t naturally speak the same language.'}
+    ]
+  },
+  {
+    id:'sign', accent:'#E8734A', label:'ArSL Recognition', sub:'deep learning · NTI internship',
+    tagline:'Teaching a model to read Arabic Sign Language',
+    role:'ML developer', duration:'Aug 2025 – Sep 2025',
+    tech:['Python','TensorFlow/Keras','CNN','OpenCV','NumPy','Gradio','Hugging Face'],
+    live:'https://huggingface.co/spaces/JoeMax3/Sign_Language_Detection',
+    images:[IMG.sign1, IMG.sign2],
+    chapters:[
+      {t:'The challenge', p:'There\u2019s a real communication gap between deaf and hard-of-hearing signers and non-signers, and very few tools exist that are trained specifically on Arabic Sign Language.'},
+      {t:'The thinking', p:'I planned a CNN-based pipeline and gathered a dataset of over 54,000 labeled ArSL gesture images before touching model architecture — the data was always going to matter more than the network design.'},
+      {t:'Building it', p:'Trained the model in TensorFlow over 20 epochs, watching loss drop from 1.77 to 0.08, then wrapped the final model in a Gradio interface for live, in-browser testing.'},
+      {t:'Where it stands', p:'The model reaches 97% recognition accuracy and is deployed live as a Hugging Face Space anyone can try.'},
+      {t:'What I learned', p:'Most of the accuracy gain came from patient data cleaning, not architecture tweaks — a lesson I now trust more than any hyperparameter guide.'}
+    ]
+  }
+];
+
+const ALSO_BUILT = [
+  {h:'Supply Chain Management System', p:'A semester project streamlining product tracking, inventory, and order processing, with a MySQL backend — built with Python and Tkinter.'},
+  {h:'BioChefs: Sunflower Genome Engineering', p:'iGEM MENA League project on Auxin/Gibberellin hormone pathways for crop growth — earned a Bronze Medal and Best Food Theme Project.'},
+  {h:'Space Biology Superhero Challenge', p:'Led a 5-member team at NASA Space Apps to design a genome-modification strategy inspired by tardigrade resilience — 1st place.'}
+];
+
+const ACHIEVEMENTS = [
+  {ic:'🚀', h:'1st Place — Space Biology Superhero', org:'NASA Space Apps Hackathon', p:'Led a 5-member team building a project website and an educational game about astronauts\u2019 journeys, plus a genome-tolerance strategy inspired by tardigrades.', y:'2022'},
+  {ic:'⚽', h:'Founder & CEO', org:'Scouse Musketeers Soccer Club', p:'Founded the first female soccer club in the STEM schools\u2019 community — captain and coach to 32 members, 1st place at Burg Al Arab local level.', y:'2022 – 2024'},
+  {ic:'🌱', h:'National Winner — Soil Compass', org:'Nation Builders, US Embassy & Ministry of Youth & Sports', p:'One of six winning teams nationwide; also finalist at the Egyptian Junior Researcher Competition, Nile University — sponsored by Azola Egypt.', y:'2022 – 2024'},
+  {ic:'🧬', h:'Bronze Medal & Best Food Theme', org:'iGEM MENA League — BioChefs', p:'Led the sunflower genome engineering project through the full genetic-modification workflow, from codon design to transgenic characterization.', y:'2023'},
+  {ic:'🎙️', h:'CEO, Content Writing Head', org:'SEA Team (STEM English Activity)', p:'Presided over a club preparing students for TOEFL/IELTS, and wrote content for major announcements before becoming president.', y:'2022 – 2024'},
+  {ic:'🤝', h:'Top 5 of 28 — Organizing Committee', org:'BTG (Bridging the Gap)', p:'Designed session-linked gifts and presented to groups of 70+ youth at Bibliotheca Alexandrina.', y:'2022 – 2023'},
+  {ic:'⌚', h:'Intel ISEF Project — Watch21', org:'Health-monitoring smartwatch', p:'Built a vitals-tracking smartwatch and companion app for children with Down syndrome.', y:'2022 – 2023'},
+  {ic:'🎯', h:'120th of 15,000', org:'STEM Schools Entrance Exam', p:'Placed 120th nationwide out of 15,000 students in the entrance exam for STEM schools.', y:'2021'},
+  {ic:'🗣️', h:'DET Score: 115', org:'Duolingo English Test', p:'Standardized English proficiency score.', y:'2024'}
+];
+
+const TIMELINE = [
+  {d:'Aug 2026 – Present', t:'Freelance Transcriptionist', o:'Annotica', desc:'Transcribing and proofreading audio content into accurate, well-structured documents, managing assignments independently.'},
+  {d:'Jul 2025 – Present', t:'Programming Instructor & Creative Content Designer', o:'CodeMinds Academy', desc:'Teaching Python, C++ and Scratch across multiple age groups, and designing the academy\u2019s digital marketing content, including AI-generated cartoon videos.'},
+  {d:'Jun 2025 – Jan 2026', t:'Programming Instructor', o:'ICPT Centre', desc:'Taught Scratch, Python, ICDL, HTML, App Inventor and Robotics to 18 primary-level students.'},
+  {d:'Oct 2024 – Present', t:'B.Sc. Computer Science & IT (AI and Data Science)', o:'Egypt-Japan University of Science & Technology (E-JUST)', desc:'CGPA 3.53/4.0, awarded a 50% merit-based scholarship.'},
+  {d:'Aug 2024 – Present', t:'Freelance Mentor', o:'Independent', desc:'Developing and optimizing CVs, profiles and applications for 30+ clients applying to scholarships, jobs and internships.'},
+  {d:'Oct 2021 – Jul 2024', t:'High School Diploma', o:'Alexandria ATEM High School', desc:'CGPA 3.75/4.0 — ranked 120th of 15,000 students in the STEM schools entrance exam.'}
+];
+
+/* ============ HERO IMAGE ============ */
+document.getElementById('profileImg').src = IMG.profile;
+
+/* ============ RENDER: FOLDERS ============ */
+const folderGrid = document.getElementById('folderGrid');
+PROJECTS.forEach(p=>{
+  const btn = document.createElement('button');
+  btn.className='folder-btn';
+  btn.setAttribute('aria-label', 'Open project: '+p.label);
+  btn.innerHTML = `<div class="folder-icon" style="background:${p.accent}"></div>
+    <div class="folder-label">${p.label}</div>
+    <div class="folder-sub">${p.sub}</div>`;
+  btn.addEventListener('click', ()=> openProject(p.id, btn));
+  folderGrid.appendChild(btn);
+});
+
+const alsoBuilt = document.getElementById('alsoBuilt');
+ALSO_BUILT.forEach(a=>{
+  const d = document.createElement('div');
+  d.className='note-card';
+  d.innerHTML = `<h4>${a.h}</h4><p>${a.p}</p>`;
+  alsoBuilt.appendChild(d);
+});
+
+/* ============ RENDER: SHELF ============ */
+const shelfRow = document.getElementById('shelfRow');
+ACHIEVEMENTS.forEach(a=>{
+  const d = document.createElement('div');
+  d.className='frame';
+  d.innerHTML = `<div class="ic">${a.ic}</div><h4>${a.h}</h4><div class="org">${a.org}</div><p>${a.p}</p><div class="yr">${a.y}</div>`;
+  shelfRow.appendChild(d);
+});
+
+/* ============ RENDER: TIMELINE ============ */
+const tlList = document.getElementById('tlList');
+TIMELINE.forEach(t=>{
+  const d = document.createElement('div');
+  d.className='tl-item';
+  d.innerHTML = `<div class="tl-date">${t.d}</div><div class="tl-title">${t.t}</div><div class="tl-org">${t.o}</div><div class="tl-desc">${t.desc}</div>`;
+  tlList.appendChild(d);
+});
+
+/* ============ OVERLAY LOGIC ============ */
+const overlay = document.getElementById('overlay');
+function renderOverlay(p){
+  const linksHtml = p.live
+    ? `<a href="${p.live}" target="_blank" rel="noopener">View live ↗</a>`
+    : `<span>${p.liveNote||'No public link yet'}</span>`;
+  const imgs = p.images.filter(Boolean);
+  overlay.innerHTML = `
+    <button class="ov-close" id="ovClose" aria-label="Close project">✕</button>
+    <div class="ov-inner">
+      <div class="ov-eyebrow">${p.sub}</div>
+      <h2 class="ov-title">${p.label}</h2>
+      <div class="ov-tagline">${p.tagline}</div>
+      <div class="ov-meta">
+        <div><div class="k">Role</div><div class="v">${p.role}</div></div>
+        <div><div class="k">Duration</div><div class="v">${p.duration}</div></div>
+      </div>
+      <div class="ov-tech">${p.tech.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+      <div class="ov-links">${linksHtml}</div>
+      <div class="ov-gallery">${imgs.map(()=>`<img alt="${p.label} screenshot">`).join('')}</div>
+      <div class="chapters">
+        ${p.chapters.map((c,i)=>`<div class="chapter" data-n="${i+1}"><h3>${c.t}</h3><p>${c.p}</p></div>`).join('')}
+      </div>
+    </div>`;
+  overlay.querySelectorAll('.ov-gallery img').forEach((el,i)=>{
+    el.src = imgs[i];
+    el.addEventListener('click', ()=> openLightbox(imgs[i]));
+  });
+  document.getElementById('ovClose').addEventListener('click', closeProject);
+}
+
+let lastOrigin = null;
+function openProject(id, originEl){
+  const p = PROJECTS.find(x=>x.id===id);
+  if(!p) return;
+  renderOverlay(p);
+  const rect = originEl.getBoundingClientRect();
+  lastOrigin = `${rect.left+rect.width/2}px ${rect.top+rect.height/2}px`;
+  overlay.style.transformOrigin = lastOrigin;
+  requestAnimationFrame(()=>{ overlay.classList.add('active'); });
+  document.body.classList.add('lock-scroll');
+  overlay.scrollTop = 0;
+}
+function closeProject(){
+  if(lastOrigin) overlay.style.transformOrigin = lastOrigin;
+  overlay.classList.remove('active');
+  document.body.classList.remove('lock-scroll');
+  setTimeout(()=>{ overlay.innerHTML=''; }, 500);
+}
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && overlay.classList.contains('active')) closeProject();
+});
+
+/* ============ LIGHTBOX ============ */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+function openLightbox(src){ lightboxImg.src = src; lightbox.classList.add('open'); }
+lightbox.addEventListener('click', ()=> lightbox.classList.remove('open'));
+
+/* ============ MONITOR BOOT ON SCROLL ============ */
+const deskScene = document.getElementById('deskScene');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{ if(en.isIntersecting) deskScene.classList.add('lit'); });
+}, {threshold:.3});
+io.observe(deskScene);
+
+/* ============ HERO TYPEWRITER ============ */
+const typedText = document.getElementById('typedText');
+const fullText = "Welcome to where ideas become reality.";
+let ti = 0;
+function typeStep(){
+  if(ti <= fullText.length){
+    typedText.textContent = fullText.slice(0, ti);
+    ti++;
+    setTimeout(typeStep, 38);
+  }
+}
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ typedText.textContent = fullText; } else { typeStep(); }
+
+/* ============ MOBILE NAV ============ */
+const navToggle = document.getElementById('nav-toggle');
+const navlist = document.getElementById('navlist');
+navToggle.addEventListener('click', ()=> navlist.classList.toggle('open'));
+navlist.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> navlist.classList.remove('open')));
+
+/* ============ NOTE FORM -> MAILTO ============ */
+document.getElementById('noteForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const nm = document.getElementById('nm').value;
+  const em = document.getElementById('em').value;
+  const ms = document.getElementById('ms').value;
+  const subject = encodeURIComponent('Hey Menna — from your site');
+  const body = encodeURIComponent(`${ms}\n\n— ${nm} (${em})`);
+  window.location.href = `mailto:mennaessam347@gmail.com?subject=${subject}&body=${body}`;
+  document.getElementById('noteConfirm').classList.add('show');
+});
+</script>
+</body>
+</html>
